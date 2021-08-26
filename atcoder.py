@@ -2,7 +2,7 @@ import requests
 import bs4
 import os
 import pickle
-fileid=["1zXrLq7ZN8bwtcvn0nLig0ed4gn0lQjMc"]
+
 path="atcoder/rematc"
 remdict={}
 
@@ -24,48 +24,6 @@ async def check_atcoder():
         if " - " in i.text or "All" in i.text or "-"==i.text:
             result[3].append("Rated:"+i.text)
     return result
-
-def rematc_init(Drive):
-    global remdict
-    gf = Drive.CreateFile({'id': fileid[0]})
-    gf.GetContentFile(path)
-    f = open(path)
-    if os.stat(path).st_size == 0:
-        pickle.dump(remdict,f)
-    else:
-        remdict=pickle.load(f)
-    return
-
-def rematc_save(Drive):
-    global remdict
-    f = open(path,mode="f")
-    f.write(remdict)
-    f.close()
-    gf = Drive.CreateFile({"id": fileid[0], "title": "rematc"})
-    gf.SetContentFile(path)
-    gf.Upload()
-    return 
-def rematc_check(discordid):
-    global remdict
-    if discordid in remdict:
-        return remdict[discordid]
-    else:
-        return -1
-
-def rematc_change(Drive,atcid,discordid):
-    global remdict
-    changeid=0
-    if atcid==None and discordid in remdict:#通知停止
-        changeid=1
-        remdict.pop(discordid) 
-    elif not atcid=="":#通知追加と変更
-        changeid=1
-        atcid=check_rate(atcid)
-        if atcid != -1:
-            remidict[discordid]=atcid
-    if changeid==1:
-        rematc_save(Drive)
-    return 
 
 def check_rate(id):
     #print("test")
@@ -91,4 +49,3 @@ def check_rate(id):
     else:
         return -1
     
-#print(check_rate("blackpit9"))
